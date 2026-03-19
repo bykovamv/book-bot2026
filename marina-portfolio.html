@@ -17,8 +17,8 @@
             min-height: 100vh;
             color: #2d1a4a;
             line-height: 1.6;
-            overflow-x: hidden;
             position: relative;
+            overflow-x: hidden;
         }
 
         /* Падающие листы бумаги */
@@ -150,85 +150,21 @@
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 25px;
             margin-top: 30px;
-            perspective: 1000px;
         }
 
         .card {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(10px);
             border-radius: 20px;
-            padding: 0;
+            padding: 30px;
             text-align: center;
-            transition: transform 0.6s ease, box-shadow 0.4s ease, opacity 0.6s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid rgba(155, 126, 189, 0.3);
-            opacity: 0;
-            transform: translateY(40px);
-            height: 280px;
-            position: relative;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            border-radius: 20px;
-        }
-
-        .card:hover .card-inner {
-            transform: rotateY(180deg) scale(1.05);
-        }
-
-        .card.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
 
         .card:hover {
+            transform: translateY(-8px) scale(1.05);
             box-shadow: 0 20px 50px rgba(155, 126, 189, 0.4);
-        }
-
-        .card-front,
-        .card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 25px;
-        }
-
-        .card-front {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(232, 223, 245, 0.9));
-        }
-
-        .card-back {
-            background: linear-gradient(135deg, #9b7ebd, #7d5fb8);
-            transform: rotateY(180deg);
-            color: #ffffff;
-        }
-
-        .card-back img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 16px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0.9;
-        }
-
-        .card-back .back-content {
-            position: relative;
-            z-index: 1;
-            color: #ffffff;
         }
 
         .card-icon {
@@ -244,15 +180,10 @@
         }
 
         .card p {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             opacity: 0.8;
-            line-height: 1.5;
+            line-height: 1.6;
             color: #5a4a6d;
-        }
-
-        .card-back h3,
-        .card-back p {
-            color: #ffffff;
         }
 
         .contacts {
@@ -363,52 +294,19 @@
             <h2 class="section-title">Мои интересы</h2>
             <div class="interests">
                 <div class="card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">🐾</div>
-                            <h3>Зооволонтерство</h3>
-                            <p>Помощь животным и забота о тех, кто нуждается</p>
-                        </div>
-                        <div class="card-back">
-                            <img src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=400" alt="Зооволонтерство">
-                            <div class="back-content">
-                                <h3>Зооволонтерство</h3>
-                                <p>Помощь животным</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-icon">🐾</div>
+                    <h3>Зооволонтерство</h3>
+                    <p>Помощь животным и забота о тех, кто нуждается</p>
                 </div>
                 <div class="card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">⚡</div>
-                            <h3>Технологии</h3>
-                            <p>Изучение вайбкодинга и AI-инструментов</p>
-                        </div>
-                        <div class="card-back">
-                            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400" alt="Технологии">
-                            <div class="back-content">
-                                <h3>Технологии</h3>
-                                <p>Vibecoding & AI</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-icon">⚡</div>
+                    <h3>Технологии</h3>
+                    <p>Изучение вайбкодинга и AI-инструментов</p>
                 </div>
                 <div class="card">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <div class="card-icon">🌱</div>
-                            <h3>Развитие</h3>
-                            <p>Непрерывный рост и новые горизонты</p>
-                        </div>
-                        <div class="card-back">
-                            <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400" alt="Развитие">
-                            <div class="back-content">
-                                <h3>Развитие</h3>
-                                <p>Постоянный рост</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-icon">🌱</div>
+                    <h3>Развитие</h3>
+                    <p>Непрерывный рост и новые горизонты</p>
                 </div>
             </div>
         </section>
@@ -451,30 +349,6 @@
             paper.style.animationDuration = (Math.random() * 10 + 10) + 's';
             papersContainer.appendChild(paper);
         }
-
-        // Анимация появления карточек при прокрутке
-        const cards = document.querySelectorAll('.card');
-
-        const observerOptions = {
-            threshold: 0.2,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 200);
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        cards.forEach((card, index) => {
-            card.setAttribute('data-index', index);
-            observer.observe(card);
-        });
     </script>
 </body>
 </html>
