@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Марина — Персональная визитка</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8dff5 0%, #d4c4e8 50%, #c9b5e0 100%);
+            min-height: 100vh;
+            color: #2d1a4a;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Падающие листы бумаги */
+        .papers {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .paper {
+            position: absolute;
+            width: 30px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            border-radius: 2px;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+
+        .letter {
+            display: inline-block;
+            opacity: 0;
+            animation: typewriter 0.5s ease forwards;
+        }
+
+        @keyframes typewriter {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.7;
+            font-weight: 300;
+        }
+
+        section {
+            margin: 50px 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #9b7ebd, #7d5fb8);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        .about {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.8;
+        }
+
+        .interests {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(155, 126, 189, 0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(155, 126, 189, 0.4);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #4a2c6d;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            line-height: 1.6;
+            color: #5a4a6d;
+        }
+
+        .contacts {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #4a2c6d;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            padding: 20px;
+            min-width: 100px;
+        }
+
+        .contact-item:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .contact-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #9b7ebd 0%, #7d5fb8 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+            box-shadow: 0 5px 20px rgba(155, 126, 189, 0.4);
+        }
+
+        .contact-label {
+            font-size: 0.9rem;
+            opacity: 0.85;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 20px;
+            opacity: 0.6;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(74, 44, 109, 0.2);
+            margin-top: 60px;
+            color: #4a2c6d;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .avatar {
+                width: 120px;
+                height: 120px;
+                font-size: 45px;
+            }
+
+            .container {
+                padding: 25px 15px;
+            }
+
+            .contacts {
+                gap: 20px;
+            }
+
+            .contact-item {
+                min-width: 80px;
+                padding: 15px;
+            }
+
+            .contact-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="avatar">
+                <img src="8592634.jpg" alt="Марина">
+            </div>
+            <h1><span class="letter" style="animation-delay: 0.1s">М</span><span class="letter" style="animation-delay: 0.2s">а</span><span class="letter" style="animation-delay: 0.3s">р</span><span class="letter" style="animation-delay: 0.4s">и</span><span class="letter" style="animation-delay: 0.5s">н</span><span class="letter" style="animation-delay: 0.6s">а</span></h1>
+            <p class="tagline">HR • Карьерный консультант • Коуч</p>
+        </header>
+
+        <section>
+            <h2 class="section-title">Обо мне</h2>
+            <div class="about">
+                <p>
+                    Привет! Меня зовут Марина, я HR, корпоративный карьерный консультант 
+                    и коуч в ИТ компании.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Мои интересы</h2>
+            <div class="interests">
+                <div class="card">
+                    <div class="card-icon">🐾</div>
+                    <h3>Зооволонтерство</h3>
+                    <p>Помощь животным и забота о тех, кто нуждается</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Технологии</h3>
+                    <p>Изучение вайбкодинга и AI-инструментов</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🌱</div>
+                    <h3>Развитие</h3>
+                    <p>Непрерывный рост и новые горизонты</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Контакты</h2>
+            <div class="contacts">
+                <a href="tel:+79990000000" class="contact-item">
+                    <div class="contact-icon">📱</div>
+                    <span class="contact-label">+7 (999) 000-00-00</span>
+                </a>
+                <a href="mailto:marina@example.com" class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <span class="contact-label">Email</span>
+                </a>
+                <a href="https://t.me/username" class="contact-item" target="_blank">
+                    <div class="contact-icon">✈️</div>
+                    <span class="contact-label">@username</span>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2026 Марина. Все права защищены.</p>
+        </footer>
+    </div>
+
+    <div class="papers" id="papers"></div>
+
+    <script>
+        // Создание падающих листов бумаги
+        const papersContainer = document.getElementById('papers');
+        const paperCount = 20;
+
+        for (let i = 0; i < paperCount; i++) {
+            const paper = document.createElement('div');
+            paper.className = 'paper';
+            paper.style.left = Math.random() * 100 + '%';
+            paper.style.animationDelay = Math.random() * 5 + 's';
+            paper.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            papersContainer.appendChild(paper);
+        }
+    </script>
+</body>
+</html>
