@@ -189,7 +189,8 @@
         .contacts {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            align-items: center;
+            gap: 40px;
             flex-wrap: wrap;
             margin-top: 30px;
         }
@@ -198,11 +199,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             text-decoration: none;
             color: #4a2c6d;
             transition: transform 0.3s ease, opacity 0.3s ease;
             padding: 20px;
-            min-width: 100px;
+            width: 100px;
+            height: 120px;
         }
 
         .contact-item:hover {
@@ -221,13 +224,14 @@
             font-size: 1.6rem;
             margin-bottom: 12px;
             box-shadow: 0 5px 20px rgba(155, 126, 189, 0.4);
+            flex-shrink: 0;
         }
 
         .contact-label {
             font-size: 0.9rem;
             opacity: 0.85;
             text-align: center;
-            word-break: break-word;
+            white-space: nowrap;
         }
 
         footer {
@@ -255,23 +259,24 @@
             }
 
             .contacts {
-                gap: 15px;
+                gap: 20px;
             }
 
             .contact-item {
-                min-width: 80px;
-                padding: 12px 8px;
+                width: 80px;
+                height: 100px;
+                padding: 15px 10px;
             }
 
             .contact-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.4rem;
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
                 margin-bottom: 8px;
             }
 
             .contact-label {
-                font-size: 0.8rem;
+                font-size: 0.75rem;
             }
         }
     </style>
