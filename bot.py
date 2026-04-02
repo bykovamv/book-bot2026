@@ -10,8 +10,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.client.session.aiohttp import AiohttpSession
-from aiohttp import ClientSession, TCPConnector
+from aiohttp import web
 
 # Загружаем переменные из .env файла
 load_dotenv()
@@ -20,7 +19,6 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 
 # Прокси (если нужно для обхода блокировок)
-# Пример: PROXY_URL = "http://proxy.example.com:8080"
 PROXY_URL = os.getenv("PROXY_URL", None)
 
 # Настройка логирования
@@ -165,26 +163,39 @@ async def echo_all(message: Message):
 # ==================== ЗАПУСК БОТА ====================
 async def main():
     """Основная функция запуска"""
-    # Настройка прокси если указан
-    connector = TCPConnector()
-    if PROXY_URL:
-        logging.info(f"Использование прокси: {PROXY_URL}")
-        connector = TCPConnector(ssl=False)
-    
-    session = AiohttpSession(connector=connector)
-    bot = Bot(token=BOT_TOKEN, session=session, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    # Создаём бота
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
 
     # Регистрируем роутер
     dp.include_router(router)
 
-    # Запускаем polling
-    print("🤖 Бот запущен...")
+    # Создаём HTTP-сервер для Render (чтобы был открытый порт)
+    async def health_handler(request):
+        return web.Response(text="OK")
+    
+    app = web.Application()
+    app.router.add_get('/', health_handler)
+    
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8080)
+    await site.start()
+    
+    print("🤖 Бот запущен... HTTP-сервер на порту 8080")
     logging.info("Бот запущен и готов к работе")
-    try:
-        await dp.start_polling(bot)
-    finally:
-        await bot.session.close()
+    
+    # Запускаем polling и HTTP-сервер параллельно
+    async def start_polling_task():
+        try:
+            await dp.start_polling(bot)
+        finally:
+            await bot.session.close()
+    
+    await asyncio.gather(
+        start_polling_task(),
+        asyncio.sleep(float('inf'))  # Держим HTTP-сервер запущенным
+    )
 
 
 if __name__ == "__main__":
