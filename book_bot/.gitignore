@@ -39,6 +39,7 @@ wheels/
 
 # Логи
 *.log
+logs/
 
 # ОС
 .DS_Store
