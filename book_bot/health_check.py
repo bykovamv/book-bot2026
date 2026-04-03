@@ -53,13 +53,22 @@ async def check_bot():
 async def check_api_connection():
     """Проверка соединения с Telegram API"""
     import aiohttp
+    from dotenv import load_dotenv
+    
+    load_dotenv()
+    proxy_url = os.getenv("PROXY_URL", "")
 
     print("Проверка соединения с api.telegram.org...")
     
-    # Пробуем без прокси
+    # Пробуем с прокси если указан
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get("https://api.telegram.org", timeout=10) as resp:
+            proxy = proxy_url if proxy_url else None
+            
+            if proxy:
+                print(f"🔒 Используем прокси: {proxy_url}")
+            
+            async with session.get("https://api.telegram.org", proxy=proxy, timeout=10) as resp:
                 if resp.status == 200:
                     print("✅ Соединение с Telegram API установлено")
                     return True

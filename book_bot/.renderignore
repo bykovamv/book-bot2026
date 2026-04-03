@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+*.egg-info/
+
+# Виртуальное окружение
+.venv
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# Локальные логи
+logs/
+*.log
+
+# Тестовые скрипты (не нужны на сервере)
+find_proxy.py
+test_health.py
+
+# Документация для локальной разработки
+MONITORING.md
+PROXY_SETUP.md

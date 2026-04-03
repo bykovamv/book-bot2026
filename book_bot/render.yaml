@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: book-bot-2026
+    env: python
+    region: frankfurt
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    healthCheckPath: /health
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: PROXY_URL
+        sync: false
+      - key: HTTP_PORT
+        value: 8080

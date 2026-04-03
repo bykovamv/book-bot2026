@@ -11,7 +11,6 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.client.session.middlewares.request_logging import RequestLogger
 from aiohttp import web
 from datetime import datetime
 
