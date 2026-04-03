@@ -10,18 +10,12 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.client.session.aiohttp import AiohttpSession
-from aiohttp import ClientSession, TCPConnector
 
 # Загружаем переменные из .env файла
 load_dotenv()
 
 # Токен бота (получите у @BotFather)
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-
-# Прокси (если нужно для обхода блокировок)
-# Пример: PROXY_URL = "http://proxy.example.com:8080"
-PROXY_URL = os.getenv("PROXY_URL", None)
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -165,14 +159,8 @@ async def echo_all(message: Message):
 # ==================== ЗАПУСК БОТА ====================
 async def main():
     """Основная функция запуска"""
-    # Настройка прокси если указан
-    connector = TCPConnector()
-    if PROXY_URL:
-        logging.info(f"Использование прокси: {PROXY_URL}")
-        connector = TCPConnector(ssl=False)
-    
-    session = AiohttpSession(connector=connector)
-    bot = Bot(token=BOT_TOKEN, session=session, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    # Создаём бота
+    bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
 
     # Регистрируем роутер
