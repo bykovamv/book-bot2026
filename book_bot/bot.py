@@ -12,6 +12,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.session.middlewares.request_logging import RequestLogger
+from aiohttp import web
+from datetime import datetime
 
 # Загружаем переменные из .env файла
 load_dotenv()
@@ -22,6 +24,13 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 # Прокси для обхода блокировок (опционально)
 # Формат: "http://proxy.example.com:8080" или "socks5://user:pass@proxy.com:1080"
 PROXY_URL = os.getenv("PROXY_URL", None)
+
+# Порт для HTTP-сервера (мониторинг UptimeRobot)
+HTTP_PORT = int(os.getenv("HTTP_PORT", "8080"))
+
+# Глобальные переменные для отслеживания состояния
+bot_start_time = None
+bot_is_running = False
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -162,9 +171,66 @@ async def echo_all(message: Message):
     await message.answer("Я пока умею только подбирать книги. Нажмите /start")
 
 
+# ==================== HTTP HEALTH CHECK ====================
+async def health_handler(request):
+    """HTTP эндпоинт для проверки работоспособности (UptimeRobot)"""
+    global bot_is_running, bot_start_time
+    
+    uptime = ""
+    if bot_start_time:
+        delta = datetime.now() - bot_start_time
+        uptime = str(delta)
+    
+    if bot_is_running:
+        return web.json_response({
+            "status": "ok",
+            "bot": "running",
+            "uptime": uptime,
+            "timestamp": datetime.now().isoformat()
+        })
+    else:
+        return web.json_response({
+            "status": "error",
+            "bot": "not running",
+            "timestamp": datetime.now().isoformat()
+        }, status=503)
+
+
+async def index_handler(request):
+    """Главная страница с информацией о боте"""
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>📚 Book Bot</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+            .status { padding: 15px; border-radius: 5px; margin: 10px 0; }
+            .ok { background: #d4edda; color: #155724; }
+            .error { background: #f8d7da; color: #721c24; }
+            code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; }
+        </style>
+    </head>
+    <body>
+        <h1>📚 Book Bot</h1>
+        <p>Telegram бот для подбора книг</p>
+        <div class="status ok">
+            <strong>✅ Бот работает</strong><br>
+            Порт: <code>""" + str(HTTP_PORT) + """</code><br>
+            Проверка: <a href="/health">/health</a>
+        </div>
+        <p><small>UptimeRobot: используйте URL <code>http://your-domain:""" + str(HTTP_PORT) + """/health</code></small></p>
+    </body>
+    </html>
+    """
+    return web.Response(text=html, content_type='text/html')
+
+
 # ==================== ЗАПУСК БОТА ====================
 async def main():
     """Основная функция запуска"""
+    global bot_start_time, bot_is_running
+    
     # Создаём сессию с прокси (если указан)
     session = AiohttpSession()
     if PROXY_URL:
@@ -182,15 +248,37 @@ async def main():
     # Регистрируем роутер
     dp.include_router(router)
 
+    # Создаём HTTP-сервер для мониторинга
+    app = web.Application()
+    app.router.add_get('/', index_handler)
+    app.router.add_get('/health', health_handler)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', HTTP_PORT)
+    
     # Запускаем polling
     print("🤖 Бот запущен...")
     if PROXY_URL:
         print(f"🔒 Прокси: {PROXY_URL}")
+    print(f"🌐 HTTP-сервер: http://0.0.0.0:{HTTP_PORT}")
+    print(f"📊 Health check: http://localhost:{HTTP_PORT}/health")
     logging.info("Бот запущен и готов к работе")
+    
+    bot_start_time = datetime.now()
+    bot_is_running = True
+    
     try:
-        await dp.start_polling(bot)
+        # Запускаем polling и HTTP-сервер параллельно
+        polling_task = asyncio.create_task(dp.start_polling(bot))
+        await site.start()
+        await polling_task
+    except asyncio.CancelledError:
+        logging.info("Поллинг отменён")
     finally:
+        bot_is_running = False
         await bot.session.close()
+        await runner.cleanup()
 
 
 if __name__ == "__main__":
